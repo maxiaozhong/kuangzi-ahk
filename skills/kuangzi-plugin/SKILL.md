@@ -10,7 +10,7 @@ description: 框子插件安装技能（kuangzi-plugin）。当用户说"帮我�
 
 ## 核心事实
 
-- 插件安装目录：`~/.kuangzi/data/kuangzi-app/plugins/<插件id>/`（Windows 即 `C:\Users\<用户>\.kuangzi\data\kuangzi-app\plugins\<插件id>\`）
+- 插件安装目录：`~/.kuangzi/data/kuangzi-app/plugins/<插件id>/`（`~/` 指用户主目录，Windows 下即 `%USERPROFILE%\.kuangzi\data\kuangzi-app\plugins\<插件id>\`）
 - 每个插件一个子目录，**目录名必须等于 manifest 的 id**，不一致时宿主拒绝加载（状态显示"无效"）
 - 插件目录内程序与 `data.json`（插件自己的用户数据）混放——**更新插件时只覆盖代码文件，绝不碰 data.json**（学 Obsidian 的升级规矩，靠规矩不靠目录隔离）
 - 框子主程序运行中安装/卸载：**须让宿主重扫一次**才生效——「设置 → 插件 Tab → 刷新」，或重启宿主（宿主只在启动与点刷新两处扫描，没有文件监控）。智能体场景走重启：`taskkill /IM kuangzi.exe /F` 后启动 `<安装目录>\kuangzi.exe`
@@ -19,8 +19,8 @@ description: 框子插件安装技能（kuangzi-plugin）。当用户说"帮我�
 
 **推荐：经 skill 安装**——用户说"帮我装 xx 插件"时，插件文件从这两个官方渠道取：
 
-- **Release 附件**：`https://gitee.com/maxiaozhong/kuangzi-ahk/releases`，附件名形如 `plugin-kuangzi-jisuan-v*.zip`（**内含编译好的 exe，开箱即用，用户无需装 AutoHotkey**）
-- **仓库源码**：公开仓 `plugins-src/<插件id>/` 目录整体复制（如框子计算 = `plugins-src/kuangzi-jisuan/`，这条路只有源码，需用户装有 AHK v2）
+- **Release 附件**：**用户所给仓库的 Releases 页**（`<仓库地址>/releases`），附件名形如 `plugin-kuangzi-jisuan-v*.zip`（**内含编译好的 exe，开箱即用，用户无需装 AutoHotkey**）
+- **仓库源码**：同一仓库 `plugins-src/<插件id>/` 目录整体复制（如框子计算 = `plugins-src/kuangzi-jisuan/`，这条路只有源码，需用户装有 AHK v2）
 
 其它插件由各自作者发布（源码/exe/zip 都可能），安装方式以插件自己的说明为准。框子AI 等作者的独立插件见其独立仓库。
 
@@ -43,13 +43,13 @@ description: 框子插件安装技能（kuangzi-plugin）。当用户说"帮我�
 用户：帮我装计算插件
 
 智能体执行：
-1. 浏览器打开 https://gitee.com/maxiaozhong/kuangzi-ahk/releases，
+1. 打开用户所给仓库的 Releases 页（`<仓库地址>/releases/latest`），
    下载最新 plugin-kuangzi-jisuan-v*.zip
-   （无附件时备选：从公开仓 plugins-src\kuangzi-jisuan\ 取源码，需用户装有 AHK v2）
+   （无附件时备选：从同一仓库 plugins-src\kuangzi-jisuan\ 取源码，需用户装有 AHK v2）
 2. 解压，读 manifest.json：id=kuangzi-jisuan，
    entry.exe=kuangzi-jisuan.exe + entry.source=main.ahk（exe 优先，用户无需 AHK 环境），
    actions=[calculate]，keywords=[计算, js] ✓
-3. 整个目录复制到 C:\Users\<用户>\.kuangzi\data\kuangzi-app\plugins\kuangzi-jisuan\
+3. 整个目录复制到 ~/.kuangzi/data/kuangzi-app/plugins/kuangzi-jisuan/
 4. 提示用户：设置→插件Tab→刷新（或重启框子）
 5. kuangzi go "计算 1+1" --json → {"ok":true,"text":"2"} ✓
 6. 告知用法：输入 计算 1+1 直接算；输入 js 开计算器窗口（含历史）

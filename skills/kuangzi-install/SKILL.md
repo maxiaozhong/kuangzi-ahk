@@ -1,6 +1,6 @@
 ---
 name: kuangzi-install
-description: 框子（kuangzi）安装技能。当用户说"帮我装框子/安装kuangzi/装一下框子/升级框子/更新框子"，或发给智能体框子仓库链接（https://gitee.com/maxiaozhong/kuangzi-ahk）并要求安装时使用。流程：测 kuangzi-cli --version 判定初次安装/升级/已最新（版本号四态）→ 从 Gitee Releases 下载 kuangzi-setup-v*.exe → 静默安装（--silent --json，升级时带 --dir 原位覆盖）→ 验证 → 把本仓库 skills/ 下的技能装入智能体自己的技能目录。装好后日常使用归 kuangzi-cli 技能，本技能只管装。
+description: 框子（kuangzi）安装技能。当用户说"帮我装框子/安装kuangzi/装一下框子/升级框子/更新框子"，或发给智能体框子仓库链接并要求安装时使用。流程：测 kuangzi-cli --version 判定初次安装/升级/已最新（版本号四态）→ 从用户所给仓库的 Releases 下载 kuangzi-setup-v*.exe → 静默安装（--silent --json，升级时带 --dir 原位覆盖）→ 验证 → 把该仓库 skills/ 下的技能装入智能体自己的技能目录。装好后日常使用归 kuangzi-cli 技能，本技能只管装。
 ---
 
 # 框子安装技能（kuangzi-install）
@@ -13,7 +13,7 @@ description: 框子（kuangzi）安装技能。当用户说"帮我装框子/安�
 
 ## 前置事实（写死在流程里的契约）
 
-- 发布渠道：`https://gitee.com/maxiaozhong/kuangzi-ahk/releases`（Gitee 公开仓）
+- 发布渠道：**用户所给仓库的 Releases 页**（即 `<仓库地址>/releases`，取 `releases/latest` 里最新那条）；Gitee 与 GitHub 各有一份同名发布，用户给哪个就用哪个，两个都没有时再问用户要地址
 - 安装包名形如 `kuangzi-setup-v<版本>.exe`，版本号编在文件名里（离线可认版本）
 - 静默安装：`kuangzi-setup.exe --silent --json`（用户级安装，无需管理员权限）
 - 安装器 JSON 结果：`{"ok":1,"done":[...],"failed":[...],"installDir":"..."}`
@@ -47,10 +47,13 @@ kuangzi-cli.exe --version
 
 ## 第二步：下载安装包
 
-从 `https://gitee.com/maxiaozhong/kuangzi-ahk/releases/latest` 页面找最新 Release 的 `kuangzi-setup-v*.exe` 附件下载，或用 API 定位：
+从用户所给仓库的 Releases 最新页（`<仓库地址>/releases/latest`）找 `kuangzi-setup-v*.exe` 附件下载，或用平台 API 定位（`<owner>/<repo>` 即用户所给地址的路径部分）：
 
 ```bash
-curl -s https://gitee.com/api/v5/repos/maxiaozhong/kuangzi-ahk/releases/latest
+# Gitee 仓
+curl -s https://gitee.com/api/v5/repos/<owner>/<repo>/releases/latest
+# GitHub 仓
+curl -s https://api.github.com/repos/<owner>/<repo>/releases/latest
 # 取 assets[].browser_download_url 中形如 kuangzi-setup-v*.exe 的那个
 curl -L -o "%TEMP%\kuangzi-setup.exe" <browser_download_url>
 ```
@@ -120,11 +123,11 @@ curl -L -o "%TEMP%\kuangzi-setup.exe" <browser_download_url>
 
 ## 第五步：技能落盘（闭环关键一步）
 
-装完宿主不算闭环——**把本仓库 `skills/` 下的技能复制进智能体自己的技能目录**，下次会话起 "记一下/待办" 原生触发：
+装完宿主不算闭环——**把仓库 `skills/` 下的技能复制进智能体自己的技能目录**，下次会话起 "记一下/待办" 原生触发：
 
 - ZCode：`~/.zcode/skills/kuangzi-cli/`（及 `kuangzi-plugin/`、`kuangzi-install/`）
 - 其他智能体：各自的技能目录（Claude Code 的 `.claude/skills/` 等），按其规范落位
-- 技能来源：克隆或下载本仓库 ZIP 后取 `skills/` 子树
+- 技能来源：克隆或下载**用户所给仓库**的 ZIP 后取 `skills/` 子树
 - 已存在同目录时**整目录覆盖**（skill 是随版本演进的，覆盖优于合并）
 
 ## 终态检查单

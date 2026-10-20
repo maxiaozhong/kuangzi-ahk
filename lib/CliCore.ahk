@@ -101,8 +101,6 @@ EmitResult(res) {
             Out("❌ 多候选：该关键词命中多个快捷启动，请换精确词")
             ExitApp(2)
         }
-        if (res.action = "plugin" && res.HasOwnProp("intent"))
-            CliApplyIntent(res)
         if (JsonMode) {
             o := Map("ok", "true", "action", res.action)
             if (path != "")
@@ -116,6 +114,14 @@ EmitResult(res) {
             Out(JsonOut(o))
         } else {
             Out("✅ " CliActionLabel(res.action))
+        }
+        if (res.action = "plugin" && res.HasOwnProp("intent")) {
+            try
+                CliApplyIntent(res)
+            catch as e {
+                if (!JsonMode)
+                    Out("⚠️ 插件副作用未完成：" e.Message)
+            }
         }
         ExitApp(0)
     }

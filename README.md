@@ -30,7 +30,7 @@
 
 ### 手动安装
 
-1. 打开 [Releases](https://gitee.com/maxiaozhong/kuangzi-ahk/releases)，下载 `kuangzi-setup-v*.exe`
+1. 打开仓库的 **Releases** 页，下载 `kuangzi-setup-v*.exe`
 2. 双击安装（用户级安装，**不需要管理员权限**；安装位置可自定义）
 3. 装完按 `Alt+Space`——框子已经在工作了
 
@@ -213,7 +213,7 @@ kuangzi archive --month       # 归档上个月（先预览，确认后 --go）
 
 ## 插件
 
-框子支持插件扩展。官方演示插件**框子计算**在 [Releases](https://gitee.com/maxiaozhong/kuangzi-ahk/releases) 下载，或者直接对 AI 说"帮我装计算插件"。
+框子支持插件扩展。官方演示插件**框子计算**在仓库的 **Releases** 页下载，或者直接对 AI 说"帮我装计算插件"。
 
 想自己写？协议很简单（`invoke.v1`），框子计算本身就是模板，见 [插件开发文档](doc/plugin-dev.md)。插件申请敏感权限（读剪贴板、读前台窗口）必须显式声明，装之前你能看到它要什么。
 
