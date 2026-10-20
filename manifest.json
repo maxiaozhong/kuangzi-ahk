@@ -1,0 +1,16 @@
+{
+  "id": "kuangzi",
+  "name": "框子",
+  "pinyin": "kuangzi",
+  "version": "0.2.261019",
+  "description": "框子：AI 原生的多功能输入框。支持随手记、随手搜、快捷启动、自定义热键。",
+  "author": "maxiaozhong",
+  "license": "Proprietary",
+  "repository": "https://gitee.com/maxiaozhong/kuangzi-ahk.git",
+  "minAhkVersion": "2.0",
+  "forms": {
+    "gui": { "name": "框子", "entry": "kuangzi.ahk" },
+    "cli": { "name": "框子CLI", "entry": "kuangzi-cli.ahk" },
+    "skill": { "name": "kuangzi-cli", "entry": "skills/kuangzi-cli/SKILL.md" }
+  }
+}

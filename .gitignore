@@ -1,0 +1,22 @@
+# 构建产物与本地派生工具（tools\build.ps1 生成）
+build/
+tools/_local/
+
+# 插件运行时用户数据
+plugins-src/*/data.json
+
+# 测试临时产物
+test/_tmp/
+
+# 日志
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / AI 私有工作数据（工作记忆、计划，不对外公开）
+.workbuddy/
+.codebuddy/
+.zcode/
