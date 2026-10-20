@@ -1,6 +1,6 @@
 ---
 name: kuangzi-install
-description: 框子（kuangzi）安装技能。当用户说"帮我装框子/安装kuangzi/装一下框子/升级框子/更新框子"，或发给智能体框子仓库链接并要求安装时使用。流程：测 kuangzi-cli --version 判定初次安装/升级/已最新（版本号四态）→ 从用户所给仓库的 Releases 下载 kuangzi-setup-v*.exe → 静默安装（--silent --json，升级时带 --dir 原位覆盖）→ 验证 → 把该仓库 skills/ 下的技能装入智能体自己的技能目录。装好后日常使用归 kuangzi-cli 技能，本技能只管装。
+description: 框子（kuangzi）安装技能。当用户说"帮我装框子/安装kuangzi/装一下框子/升级框子/更新框子"，或发给智能体框子仓库链接并要求安装时使用。流程：测 kuangzi-cli --version 判定初次安装/升级/已最新（版本号四态）→ 从用户所给仓库的 Releases 下载 kuangzi-setup-v*.exe → 静默安装（--silent --desktop --json，升级时带 --dir 原位覆盖）→ 验证 → 把该仓库 skills/ 下的技能装入智能体自己的技能目录。装好后日常使用归 kuangzi-cli 技能，本技能只管装。
 ---
 
 # 框子安装技能（kuangzi-install）
@@ -15,7 +15,8 @@ description: 框子（kuangzi）安装技能。当用户说"帮我装框子/安�
 
 - 发布渠道：**用户所给仓库的 Releases 页**（即 `<仓库地址>/releases`，取 `releases/latest` 里最新那条）；Gitee 与 GitHub 各有一份同名发布，用户给哪个就用哪个，两个都没有时再问用户要地址
 - 安装包名形如 `kuangzi-setup-v<版本>.exe`，版本号编在文件名里（离线可认版本）
-- 静默安装：`kuangzi-setup.exe --silent --json`（用户级安装，无需管理员权限）
+- 静默安装：`kuangzi-setup.exe --silent --desktop --json`（用户级安装，无需管理员权限）
+- **`--desktop` 必须显式给**：静默模式默认只建开始菜单快捷方式，**不建桌面图标**；只有用户明说不要桌面图标时才省掉
 - 安装器 JSON 结果：`{"ok":1,"done":[...],"failed":[...],"installDir":"..."}`
 - 默认安装目录：`~/.kuangzi/app/kuangzi-app/`；**安装位置可自定义**（`--dir`），不要假设默认路径
 - 探活命令：`kuangzi-cli.exe --version`（别用裸 `kuangzi`：Windows 终端按 PATHEXT 命中 GUI 宿主 kuangzi.exe，弹窗无输出）
@@ -63,10 +64,12 @@ curl -L -o "%TEMP%\kuangzi-setup.exe" <browser_download_url>
 ### 初次安装
 
 ```bash
-"%TEMP%\kuangzi-setup.exe" --silent --json
+"%TEMP%\kuangzi-setup.exe" --silent --desktop --json
 ```
 
 装完安装器会自动启动宿主（默认行为）。JSON 的 `installDir` 即安装目录，后续验证走该路径下的 `kuangzi-cli.exe`。
+
+`done` 里应能看到四项：程序文件就绪、已建开始菜单快捷方式、**已建桌面快捷方式**、已设开机自启（重装时「加入 PATH」一项会因幂等而省略，属正常）。
 
 ### 升级（版本 < Release）
 
@@ -82,9 +85,9 @@ curl -L -o "%TEMP%\kuangzi-setup.exe" <browser_download_url>
    ```
 3. 原位覆盖安装：
    ```bash
-   "%TEMP%\kuangzi-setup.exe" --silent --dir=<InstallLocation> --json
+   "%TEMP%\kuangzi-setup.exe" --silent --desktop --dir=<InstallLocation> --json
    ```
-   不带 `--dir` 会装到默认目录，自定义安装的用户会得到双份安装。
+   不带 `--dir` 会装到默认目录，自定义安装的用户会得到双份安装。升级也带 `--desktop`——用户删过桌面图标就顺手补回来，没删过则是幂等覆盖。
 
 ### 已最新
 
@@ -134,12 +137,14 @@ curl -L -o "%TEMP%\kuangzi-setup.exe" <browser_download_url>
 
 - [ ] `kuangzi-cli.exe --version` 输出 Release 版本
 - [ ] 宿主进程在跑（初次装完自动启动；升级装完也会自动启动）
+- [ ] 桌面有「框子」图标（`--desktop` 生效的标志；用户明说不要桌面图标时此项跳过）
 - [ ] 智能体技能目录已有 kuangzi-cli（日常使用链路就位）
 - [ ] 数据层 `~/.kuangzi/data/kuangzi-app/` 已创建（GUI 首跑自动建，等几分钟或用户首次唤起后）
 - [ ] 向用户报版本与安装路径
 
 ## 常见坑
 
+- **静默装默认没有桌面图标**：`--silent` 只建开始菜单 + 开机自启，桌面图标要显式 `--desktop`（安装器没有 `--no-desktop`，不想给就别带这个参数）。漏了会得到"开始菜单有、桌面没有"的半套结果，用户通常得回头再要求补一次
 - **PATH 时效**：装器写注册表 PATH，已开的终端会话不生效——同会话验证一律走完整路径或新进程
 - **cmd 裸敲 `kuangzi`**：PATHEXT 顺序命中 GUI 宿主 kuangzi.exe，弹窗且无终端输出——终端里用 `kuangzi-cli.exe`（或 `kuangzi.cmd`）；Git Bash 无扩展名脚本优先命中，无此坑
 - **编码**：判活只用 `--version`（ASCII）；`--help` 的中文在 GBK 管道下乱码，是显示问题不是故障
